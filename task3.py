@@ -17,6 +17,7 @@ class TestConv:
         self.open_conv(self.converter_type)
         self.open_conv(self.converter)
         self.check_conv(self.check_is_num())
+        self.return_result()
 
     def main_page(self):
         self.browser.get('https://www.metric-conversions.org/')
@@ -37,6 +38,11 @@ class TestConv:
         else:
             print('You should enter number. Try again.')
             return self.check_is_num()
+
+    def return_result(self):
+        self.wait.until(EC.visibility_of_element_located((By.XPATH, '// *[ @ id = "answer"]')))
+        answer = self.browser.find_element_by_xpath('// *[ @ id = "answer"]')
+        print(answer.text)
 
     def quit_browser(self):
         self.browser.quit()
