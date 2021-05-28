@@ -14,41 +14,44 @@ weight = '//*[@id="typeMenu"]/a[2]'
 og = '//*[@id="popLinks"]/ol/li[5]/a'
 
 
-def main_page():
-    browser.get('https://www.metric-conversions.org/')
+class TestConvertions:
+    def __init__(self, converter_type_xpath, convertion_xpath):
+        self.converter_type = converter_type_xpath
+        self.convertion = convertion_xpath
+
+    def test(self):
+        self.main_page()
+        self.open_conv(self.converter_type)
+        self.open_conv(self.convertion)
+        self.check_conv(self.check_is_num())
+
+    @staticmethod
+    def main_page():
+        browser.get('https://www.metric-conversions.org/')
+
+    @staticmethod
+    def open_conv(xpath):
+        wait.until(EC.element_to_be_clickable((By.XPATH, xpath)))
+        calc = browser.find_element_by_xpath(xpath)
+        calc.click()
+
+    @staticmethod
+    def check_conv(a):
+        field = browser.find_element_by_xpath('//*[@id="argumentConv"]')
+        field.send_keys(a)
+
+    def check_is_num(self):
+        inp = input('Enter test data: ')
+        if inp.count('.') <= 1 and inp.replace('.', '').isdigit():
+            return str(float(inp))
+        else:
+            print('You should enter number. Try again.')
+            return self.check_is_num()
+
+    @staticmethod
+    def quit_browser():
+        browser.quit()
 
 
-def open_conv(xpath):
-    wait.until(EC.element_to_be_clickable((By.XPATH, xpath)))
-    calc = browser.find_element_by_xpath(xpath)
-    calc.click()
-
-
-def check_conv(a):
-    field = browser.find_element_by_xpath('//*[@id="argumentConv"]')
-    field.send_keys(a)
-
-
-def check_is_num():
-    inp = input('Enter test data: ')
-    if inp.count('.') <= 1 and inp.replace('.', '').isdigit():
-        return str(float(inp))
-    else:
-        print('You should enter number. Try again.')
-        return check_is_num()
-
-
-def quit_browser():
-    browser.quit()
-
-
-def check(type_conv, conv_xpath):
-    main_page()
-    open_conv(type_conv)
-    open_conv(conv_xpath)
-    check_conv(check_is_num())
-
-
-check(temperature, cf)
-check(length, mf)
-check(weight, og)
+first = TestConvertions(temperature, cf)
+first.test()
