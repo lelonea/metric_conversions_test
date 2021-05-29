@@ -33,9 +33,10 @@ class TestConv:
 
     def check_is_num(self):
         inp = input('Enter test data: ')
-        if inp.count('.') <= 1 and inp.replace('.', '').isdigit():
-            return str(float(inp))
-        else:
+        try:
+            res = str(float(inp))
+            return res
+        except ValueError:
             print('You should enter number. Try again.')
             return self.check_is_num()
 
